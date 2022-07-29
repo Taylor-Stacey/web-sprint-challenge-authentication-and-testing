@@ -38,14 +38,13 @@ router.post('/register', async (req, res, next) => {
 
       try{
         const saved = await User.add(user);
-        res.status(201).json({message: `Great to have you, ${saved.username}`})
+        res.status(201).json({message: `Great to have you, ${saved.username}`, hash})
       }catch(err){
         next(err)
       }
 });
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+router.post('/login', async (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -69,6 +68,30 @@ router.post('/login', (req, res) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
+      let { username, password } = req.body
+
+      try {
+        const [user] = await User.findBy({ username });
+        if (user && bcrypt.compareSync(password, user.password)) {
+          const token = generateJwt(user);
+          res.status(200).json({
+            message: `Welcome ${user.username}...`,
+            token
+          })
+        } else {
+          next({ status: 401, message: 'Invalid Credentials' })
+        }
+      } catch(err) {
+        next(err)
+      }
 });
 
+function generateJwt(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username,
+    role: user.role,
+  };
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
+}
 module.exports = router;
