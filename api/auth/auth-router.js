@@ -1,10 +1,11 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
+const { checkUsernameExists, validateUserName } = require('../middleware/restricted');
 const { BCRYPT_ROUNDS ,JWT_SECRET } = require('../secrets');
 const router = require('express').Router();
 const User = require('./auth-model')
 
-router.post('/register', (req, res, next) => {
+router.post('/register', validateUserName, (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -40,7 +41,7 @@ router.post('/register', (req, res, next) => {
         .catch(next)
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', checkUsernameExists, async (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
