@@ -38,7 +38,7 @@ router.post('/register', async (req, res, next) => {
 
       try{
         const saved = await User.add(user);
-        res.status(201).json({message: `Great to have you, ${saved.username}`, hash})
+        res.status(201).json({message: `Great to have you, ${saved.username}`, password: hash})
       }catch(err){
         next({status: 401, message: 'username taken'})
       }
