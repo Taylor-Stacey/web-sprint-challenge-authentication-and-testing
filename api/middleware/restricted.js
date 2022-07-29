@@ -1,14 +1,29 @@
-module.exports = (req, res, next) => {
-  next();
-  /*
-    IMPLEMENT
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../../data/dbConfig');
 
-    1- On valid token in the Authorization header, call next.
+// AUTHENTICATION
+const restrict = (req, res, next) => {
+  jwt.verify(req.headers.authorization, JWT_SECRET, (err, decodedToken) => {
+    if(err) {
+      res.status(401).json({ message: 'user must be logged in' });
+      return;
+    }
 
-    2- On missing token in the Authorization header,
-      the response body should include a string exactly as follows: "token required".
+    req.jwt = decodedToken;
+    next();
+  });
+}
 
-    3- On invalid or expired token in the Authorization header,
-      the response body should include a string exactly as follows: "token invalid".
-  */
-};
+// AUTHORIZATION
+const checkRole = role => (req, res, next) => {
+  if(req.jwt.role != role) {
+    res.status(403).json({ message: 'you are forbidden to access this endpoint'});
+    return;
+  }
+  next()
+}
+
+module.exports = {
+  restrict,
+  checkRole,
+}
