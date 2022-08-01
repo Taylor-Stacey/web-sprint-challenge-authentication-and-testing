@@ -1,6 +1,6 @@
 const db = require('../data/dbConfig');
 const Users = require('./auth/auth-model')
-const bcrypt = require('bcryptjs')
+
 
 test('is NODE_ENV set correctly', () => {
   expect(process.env.NODE_ENV).toBe('testing');
@@ -27,8 +27,7 @@ test('sanity', () => {
 
 const request = require('supertest');
 const server = require('./server');
-// const password = req.body.password
-// const hash = bcrypt.hashSync(password, 8)
+
 describe('HTTP endpoints', () =>{
   test('POST /auth/register', async () => {
     let result = await request(server).post('/api/auth/register').send({ username: 'chad', })
@@ -36,8 +35,9 @@ describe('HTTP endpoints', () =>{
   })
   test('POST /auth/register', async () => {
     let result = await request(server).post('/api/auth/register').send({ username: 'chad', password: 'something' })
+    console.log(result.body.password)
     
-    // expect(result.body).toEqual({ id: 2, password: hash, username: 'chad', })
+    expect(result.body).toEqual({ id: 2, password: result.body.password, username: 'chad', })
     expect(result.status).toBe(201)
   })
   test('POST /auth/login', async () => {

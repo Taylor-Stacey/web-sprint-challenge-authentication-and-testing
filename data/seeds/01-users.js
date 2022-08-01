@@ -4,7 +4,7 @@ exports.seed = function (knex, promise) {
     .truncate()
     .then(function () {
       return knex('users').insert([
-        { username: 'sam', password: 'newpassword' },
+        { username: 'sam', password: '1234' },
       ]);
     });
 };
