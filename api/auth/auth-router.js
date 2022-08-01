@@ -5,7 +5,7 @@ const { BCRYPT_ROUNDS ,JWT_SECRET } = require('../secrets');
 const router = require('express').Router();
 const User = require('./auth-model')
 
-router.post('/register', validateUserName,  (req, res, next) => {
+router.post('/register', validateUserName, checkUsernameExists,  (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.

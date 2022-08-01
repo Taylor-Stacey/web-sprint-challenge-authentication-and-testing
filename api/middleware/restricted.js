@@ -27,11 +27,17 @@ const restrict = (req, res, next) => {
   })
 }
 async function checkUsernameExists  (req, res, next)  {
-  const users = User.findBy()
-  if(req.body.username || req.body.username.trim() === users){
-    next({ status: 401, message: 'username taken'})
-  }else {
-    next()
+  try {
+    const [user] = await User.findBy({ username: req.body.username })
+    if (user) {
+      next({ status: 401, message: 'username taken' })
+    }
+    else {
+      req.user = user
+      next()
+    }
+  } catch (err) {
+    next(err)
   }
 }
 
