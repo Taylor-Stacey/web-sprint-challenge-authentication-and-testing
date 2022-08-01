@@ -26,51 +26,22 @@ const restrict = (req, res, next) => {
     }
   })
 }
-async function checkUsernameExists(req, res, next) {
-  /*
-    If the username in req.body does NOT exist in the database
-    status 401
-    {
-      "message": "Invalid credentials"
-    }
-  */
-  try {
-    const [user] = await User.findBy({ username: req.body.username })
-    if (!user) {
-      next({ status: 401, message: 'Invalid credentials' })
-    }
-    else {
-      req.user = user
-      next()
-    }
-  } catch (err) {
-    next(err)
+async function checkUsernameExists  (req, res, next)  {
+  const users = User.findBy()
+  if(req.body.username || req.body.username.trim() === users){
+    next({ status: 401, message: 'username taken'})
+  }else {
+    next()
   }
 }
 
 const validateUserName = (req, res, next) => {
-  /*
-    If the role_name in the body is valid, set req.role_name to be the trimmed string and proceed.
-
-    If role_name is missing from req.body, or if after trimming it is just an empty string,
-    set req.role_name to be 'student' and allow the request to proceed.
-
-    If role_name is 'admin' after trimming the string:
-    status 422
-    {
-      "message": "Role name can not be admin"
-    }
-
-    If role_name is over 32 characters after trimming the string:
-    status 422
-    {
-      "message": "Role name can not be longer than 32 chars"
-    }
-  */
-  if (req.body.username || req.body.username.trim()) {
+  if (req.body.username.trim() === '') {
+    next({ status: 422, message: 'username and password required'})
+  }else if (req.body.password.trim() === '') {
+    next({ status: 422, message: 'username and password required'})
+  }else {
     next()
-  }else if (req.body.username.trim() === '') {
-    next({ status: 422, message: 'username taken'})
   }
 }
 
