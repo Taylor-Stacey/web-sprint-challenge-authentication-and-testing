@@ -56,19 +56,8 @@ const validateUserName = (req, res, next) => {
     next()
   }
 }
-
-// AUTHORIZATION
-const checkRole = role => (req, res, next) => {
-  if(req.jwt.role != role) {
-    res.status(403).json({ message: 'you are forbidden to access this endpoint'});
-    return;
-  }
-  next()
-}
-
 module.exports = {
   restrict,
-  checkRole,
   checkUsernameExists,
   validateUserName
 }
