@@ -41,7 +41,7 @@ router.post('/register', validateUserName, (req, res, next) => {
         .catch(next)
 });
 
-router.post('/login', checkUsernameExists, async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
