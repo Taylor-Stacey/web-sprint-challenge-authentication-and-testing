@@ -42,9 +42,9 @@ async function checkUsernameExists  (req, res, next)  {
 }
 
 const validateUserName = (req, res, next) => {
-  const username = req.body.username.trim() === ''
-  const password = req.body.password.trim() === ''
-  if (username || password ) {
+  console.log(req.body.username.trim())
+  console.log(req.body.password)
+  if (!req.body.username.trim() || !req.body.password.trim() ) {
     res.status(422).json({message: "username and password required"})
   }else {
     next()
